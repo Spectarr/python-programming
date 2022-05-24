@@ -12,12 +12,14 @@ words_dict = {
 
 
 def get_difficulty():
-    difficulty = input(
-        "Выберите уровень сложности (1, 2 или 3):\n 1 Лёгкий\n 2 Средний\n 3 Сложный\n"
-    )
-    if not difficulty in map(str, [1, 2, 3]):
-        print("     введите только одну цифру: 1, 2 или 3")
-        get_difficulty()
+    difficulty = None
+    while not difficulty in map(str, [1, 2, 3]):
+        difficulty = input(
+            "Выберите уровень сложности:\n 1 Лёгкий\n 2 Средний\n 3 Сложный\n"
+        )
+        print("\nвведите только одну цифру: 1, 2 или 3")
+        continue
+    
     return difficulty
 
 
@@ -53,7 +55,7 @@ def quiz():
 
     secret_word = random.choice(words)
     unknown_letters = len(secret_word)
-    clue = list("?" * unknown_letters)
+    clue = list("_" * unknown_letters)
     guessed_word_correctly = False
 
     while lives > 0:
