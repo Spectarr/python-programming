@@ -12,9 +12,9 @@
 
 
 studio=input('Какая студия вам по душе?\n'
-             '1:K.E.\n'
-             '2:T.F.\n'
-             '3:T.Ch\n'
+             '1:Klei Entertainment\n'
+             '2:Toby Fox\n'
+             '3:Team Cherry\n'
              '(отвечайте 1,2 или 3)\n'
              )
 if studio=='1':
