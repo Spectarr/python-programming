@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
 import random
+import re
+import sys
+
 
 HEART_SYMBOL = "\u2764"
 
@@ -17,9 +20,8 @@ def get_difficulty():
         difficulty = input(
             "Выберите уровень сложности:\n 1 Лёгкий\n 2 Средний\n 3 Сложный\n"
         )
-        print("\nвведите только одну цифру: 1, 2 или 3")
         continue
-    
+
     return difficulty
 
 
@@ -47,6 +49,10 @@ def update_clue(guessed_letter, secret_word, clue, unknown_letters):
     return unknown_letters
 
 
+def is_cyrillic(letter):
+    return bool(re.search("[а-я|А-Я]", letter))
+
+
 def quiz():
 
     difficulty = get_difficulty()
@@ -58,23 +64,29 @@ def quiz():
     clue = list("_" * unknown_letters)
     guessed_word_correctly = False
 
+    guesses = set()
     while lives > 0:
 
-        print(clue)
+        print(" ".join(clue))
 
-        print("Осталось жизней: " + HEART_SYMBOL * lives)
-
+        print(f"Осталось жизней: {lives} [ {HEART_SYMBOL * lives} ]")
         guess = input("Угадайте букву или слово целиком: ")
 
+        if not is_cyrillic(guess):
+            print("Используйте русские буквы")
+            continue
+        if guess in guesses:
+            print("Такая буква уже была")
+            continue
         if guess.lower() == secret_word.lower():
             guessed_word_correctly = True
             break
-
         if guess.lower() in secret_word.lower():
             unknown_letters = update_clue(guess, secret_word, clue, unknown_letters)
         else:
             print("Неправильно. Вы теряете жизнь")
             lives = lives - 1
+        guesses.add(guess)
         if unknown_letters == 0:
             guessed_word_correctly = True
             break
@@ -86,4 +98,8 @@ def quiz():
 
 
 if __name__ == "__main__":
-    quiz()
+    try:
+        quiz()
+    except KeyboardInterrupt:
+        print("\nПока!")
+        sys.exit()
