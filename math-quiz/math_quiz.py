@@ -4,11 +4,11 @@ import random
 import sys
 
 OPERATIONS = [
-    ("+", operator.add),
-    ("-", operator.sub),
-    ("*", operator.mul),
-    ("/", operator.truediv),
-]
+        "+",
+        "-",
+        "*",
+        "/",
+    ]
 QUESTIONS = 10
 RANGE_MAX = range(2, 100)
 RANGE_MIN = range(2, 50)
@@ -16,26 +16,21 @@ RANGE_MIN = range(2, 50)
 
 def hard_question():
     op_sym1 = op_sym2 = None
-    operations = [
-        "+",
-        "-",
-        "*",
-        "/",
-    ]
+
     while op_sym2 == op_sym1:
-        op_sym1 = random.choice(operations)
-        op_sym2 = random.choice(operations)
+        op_sym1 = random.choice(OPERATIONS)
+        op_sym2 = random.choice(OPERATIONS)
 
     if op_sym1 in ["*", "/"] and op_sym2 in ["*", "/"]:
-        op_sym2 = random.choice(operations[:2])
+        op_sym2 = random.choice(OPERATIONS[:2])
 
     answer = 0
     while not answer in RANGE_MAX:
         n1, n2, n3 = [random.randint(min(RANGE_MAX), max(RANGE_MAX)) for _ in range(3)]
         par_positions = random.choice(["1", "2", None])
-        if par_positions == "1" and not op_sym1 in operations[2:]:
+        if par_positions == "1" and not op_sym1 in OPERATIONS[2:]:
             question = f"({n1} {op_sym1} {n2}) {op_sym2} {n3}"
-        elif par_positions == "2" and not op_sym2 in operations[2:]:
+        elif par_positions == "2" and not op_sym2 in OPERATIONS[2:]:
             question = f"{n1} {op_sym1} ({n2} {op_sym2} {n3})"
         else:
             question = f"{n1} {op_sym1} {n2} {op_sym2} {n3}"
@@ -66,13 +61,13 @@ def simple_question(level):
         question = f"{n1} {op_sym} {n2}"
         try:
             answer = eval(question)
-        except ZeroDivisionError:
-            print(f"Zero division: {question}")
+        except Exception as e:
+            print(f"Unexpected error: {e}")
             continue
     return question, answer
 
 
-def quiz(level, number_of_questions):
+def quiz(level: str, number_of_questions: int):
     """Ask the specified number of questions, and return the number of correct
     answers."""
     score = 0
@@ -82,9 +77,6 @@ def quiz(level, number_of_questions):
             question, answer = simple_question(level)
         else:
             question, answer = hard_question()
-        if answer > 100:
-            # print(f"debug: result [{answer}] is more than 100")
-            continue
         print("What is {}".format(question))
 
         try:
@@ -104,9 +96,7 @@ def quiz(level, number_of_questions):
 
 def identify_user():
     first_name = input("What is yor name?\n")
-    # last_name = input("What is your last name?\n")
     print(f"Hello, {first_name}!")
-    # grade = "Which grade are you in?"
     return first_name
 
 
@@ -126,6 +116,7 @@ def main():
             print(f"{first_name}, you scored {score} out of {QUESTIONS * 10}")
 
         elif menu_choice == "4":  # Exit
+            print("Bye!")
             break
 
         else:
@@ -137,5 +128,5 @@ if __name__ == "__main__":
     try:
         main()
     except (KeyboardInterrupt, EOFError):
-        print("Bye!")
+        print("\nBye!")
         sys.exit()
