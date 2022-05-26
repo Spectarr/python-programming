@@ -1,6 +1,7 @@
 from hashlib import new
 from operator import is_, le
-from tkinter import messagebox, simpledialog, Button, Tk, LEFT, RIGHT, BOTTOM
+import sys
+from tkinter import messagebox, simpledialog, Button, Tk
 from tracemalloc import take_snapshot
 root = Tk()
 root.withdraw()
@@ -18,7 +19,9 @@ def get_odd_letters(message):
     return [v for i, v in enumerate(message) if not is_even(i)]
 
 
-def swap_letters(message):
+def swap_letters(message=None):
+    if not message:
+        sys.exit()
     letter_list = []
     if not is_even(len(message)):
         message += "~"
@@ -32,7 +35,8 @@ def swap_letters(message):
     return new_message
 
 
-def get_message(text):
+def get_message(text=None):
+
     win.destroy()
     if text == "зашифровать":
         message = simpledialog.askstring("Сообщение", "Что хотите зашифровать?")
@@ -40,18 +44,21 @@ def get_message(text):
     elif text == "дешифровать":
         message = simpledialog.askstring("Сообщение", "Введите сообщение для дешифровки:")
         messagebox.showinfo("Сообщение для дешифровки:", swap_letters(message))
+
     win.quit()
     return message
 
 
 if __name__ == "__main__":
     win = Tk()
-    win.geometry("400x200+400+200")
+    win.geometry("140x100+500+200")
     win.title("Задание")
+    padding = 20
     button_left = Button(win, text="зашифровать", command=lambda:get_message("зашифровать"))
     button_right = Button(win, text="дешифровать", command=lambda:get_message("дешифровать"))
     button_exit = Button(win, text="выйти", command=quit)
-    button_left.pack(side=LEFT)
-    button_right.pack(side=RIGHT)
-    button_exit.pack(side=BOTTOM)
+    button_right.grid(row=0, padx=padding)
+    button_left.grid(row=2, padx=padding)
+    button_exit.grid(row=3)
+
     win.mainloop()
