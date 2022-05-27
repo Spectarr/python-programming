@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import operator
 import random
 import sys
@@ -80,6 +81,7 @@ def simple_question(level):
             print(f"Unexpected error: {e}")
             continue
     return question, answer
+
 
 @time
 def quiz(level: str, number_of_questions: int):
