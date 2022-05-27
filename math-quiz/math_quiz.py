@@ -2,16 +2,31 @@
 import operator
 import random
 import sys
+from timeit import default_timer as timer
+from functools import wraps
 
 OPERATIONS = [
-        "+",
-        "-",
-        "*",
-        "/",
-    ]
+    "+",
+    "-",
+    "*",
+    "/",
+]
 QUESTIONS = 10
 RANGE_MAX = range(2, 100)
 RANGE_MIN = range(2, 50)
+
+
+def time(func):
+    @wraps(func)
+    def wrapper(*args):
+        """timer function"""
+        start = timer()
+        result = func(*args)
+        end = timer()
+        print(f"You made it in {round(end - start,2)} seconds!")
+        return result
+
+    return wrapper
 
 
 def hard_question():
@@ -66,7 +81,7 @@ def simple_question(level):
             continue
     return question, answer
 
-
+@time
 def quiz(level: str, number_of_questions: int):
     """Ask the specified number of questions, and return the number of correct
     answers."""
