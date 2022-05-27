@@ -37,7 +37,7 @@ def hard_question():
         op_sym1 = random.choice(OPERATIONS)
         op_sym2 = random.choice(OPERATIONS)
 
-    if op_sym1 in ["*", "/"] and op_sym2 in ["*", "/"]:
+    if op_sym1 in OPERATIONS[2:] and op_sym2 in OPERATIONS[2:]:
         op_sym2 = random.choice(OPERATIONS[:2])
 
     answer = 0
