@@ -47,10 +47,10 @@ def simple_question(level):
     and its answer (as a number)"""
     answer = 0
     if level == "1":
-        op_sym, op_func = random.choice(OPERATIONS[:2])
+        op_sym = random.choice(OPERATIONS[:2])
         numbers_range = RANGE_MAX
     else:
-        op_sym, op_func = random.choice(OPERATIONS[2:])
+        op_sym = random.choice(OPERATIONS[2:])
         numbers_range = RANGE_MIN
     while not answer in RANGE_MAX:
         n1 = random.randint(min(numbers_range), max(numbers_range))
