@@ -57,6 +57,5 @@ rectangle(5, 5, 'black')
 t.goto(-63, 135)
 rectangle(40, 5, 'black')
 
-
 t.hideturtle()
 t.mainloop()
