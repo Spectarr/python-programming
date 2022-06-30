@@ -43,15 +43,22 @@ def hard_question():
     answer = 0
     while not answer in RANGE_MAX:
         n1, n2, n3 = [random.randint(min(RANGE_MAX), max(RANGE_MAX)) for _ in range(3)]
+        # set parentheses to the first, last pair, or none 
         par_positions = random.choice(["1", "2", None])
         if par_positions == "1" and not op_sym1 in OPERATIONS[2:]:
-            question = f"({n1} {op_sym1} {n2}) {op_sym2} {n3}"
+            first_pair = f"({n1} {op_sym1} {n2})"
+            if eval(first_pair) == 1:
+                continue
+            question = f"{first_pair} {op_sym2} {n3}"
         elif par_positions == "2" and not op_sym2 in OPERATIONS[2:]:
-            question = f"{n1} {op_sym1} ({n2} {op_sym2} {n3})"
+            last_pair = f"({n2} {op_sym2} {n3})"
+            if eval(last_pair) == 1:
+                continue
+            question = f"{n1} {op_sym1} {last_pair}"
         else:
             question = f"{n1} {op_sym1} {n2} {op_sym2} {n3}"
         try:
-            test = eval(question)
+            eval(question)
         except ZeroDivisionError:
             continue
         answer = eval(question)
@@ -88,8 +95,9 @@ def quiz(level: str, number_of_questions: int):
     """Ask the specified number of questions, and return the number of correct
     answers."""
     score = 0
+    questions_left = number_of_questions
 
-    while number_of_questions:
+    while questions_left:
         if level in ["1", "2"]:
             question, answer = simple_question(level)
         else:
@@ -102,8 +110,13 @@ def quiz(level: str, number_of_questions: int):
                 print("Correct!\n")
                 score += 10
             else:
-                print("Incorrect!\n")
-            number_of_questions -= 1
+                print(f"Incorrect!\nCorrect answer is {answer}")
+            num_end = "s"
+            questions_left -= 1
+            if questions_left == 1:
+                num_end = ""
+            if questions_left:
+                print(f"{questions_left} question{num_end} left\n")
         except ValueError:
             print("I'm sorry that's invalid")
             continue
@@ -130,7 +143,7 @@ def main():
 
         if menu_choice in ["1", "2", "3"]:  # Run quiz
             score = quiz(menu_choice, QUESTIONS)
-            print(f"{first_name}, you scored {score} out of {QUESTIONS * 10}")
+            print(f"{first_name.capitalize()}, you scored {score} out of {QUESTIONS * 10}")
 
         elif menu_choice == "4":  # Exit
             print("Bye!")
