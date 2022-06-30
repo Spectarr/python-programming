@@ -13,8 +13,7 @@ OPERATIONS = [
     "/",
 ]
 QUESTIONS = 10
-RANGE_MAX = range(2, 100)
-RANGE_MIN = range(2, 50)
+RANGE = range(2, 100)
 
 
 def time(func):
@@ -31,29 +30,24 @@ def time(func):
 
 
 def hard_question():
-    op_sym1 = op_sym2 = None
-
-    while op_sym2 == op_sym1:
-        op_sym1 = random.choice(OPERATIONS)
-        op_sym2 = random.choice(OPERATIONS)
+    op_sym1 = random.choice(OPERATIONS)
+    op_sym2 = random.choice(OPERATIONS)
 
     if op_sym1 in OPERATIONS[2:] and op_sym2 in OPERATIONS[2:]:
         op_sym2 = random.choice(OPERATIONS[:2])
 
     answer = 0
-    while not answer in RANGE_MAX:
-        n1, n2, n3 = [random.randint(min(RANGE_MAX), max(RANGE_MAX)) for _ in range(3)]
-        # set parentheses to the first, last pair, or none 
+    while not answer in RANGE:
+        n1, n2, n3 = [random.randint(min(RANGE), max(RANGE)) for _ in range(3)]
+        first_pair = f"({n1} {op_sym1} {n2})"
+        last_pair = f"({n2} {op_sym2} {n3})"
+        if eval(first_pair) == 1 or eval(last_pair) == 1:
+            continue
+        # set parentheses to the first, last pair, or none
         par_positions = random.choice(["1", "2", None])
         if par_positions == "1" and not op_sym1 in OPERATIONS[2:]:
-            first_pair = f"({n1} {op_sym1} {n2})"
-            if eval(first_pair) == 1:
-                continue
             question = f"{first_pair} {op_sym2} {n3}"
         elif par_positions == "2" and not op_sym2 in OPERATIONS[2:]:
-            last_pair = f"({n2} {op_sym2} {n3})"
-            if eval(last_pair) == 1:
-                continue
             question = f"{n1} {op_sym1} {last_pair}"
         else:
             question = f"{n1} {op_sym1} {n2} {op_sym2} {n3}"
@@ -70,16 +64,16 @@ def simple_question(level):
     and its answer (as a number)"""
     answer = 0
     if level == "1":
+        numbers_range = RANGE
         op_sym = random.choice(OPERATIONS[:2])
-        numbers_range = RANGE_MAX
-    else:
-        op_sym = random.choice(OPERATIONS[2:])
-        numbers_range = RANGE_MIN
-    while not answer in RANGE_MAX:
+    elif level == "2":
+        numbers_range = range(2, 200)
+        op_sym = random.choice(OPERATIONS)
+    while not answer in RANGE:
         n1 = random.randint(min(numbers_range), max(numbers_range))
         n2 = random.randint(min(numbers_range), max(numbers_range))
         if op_sym in ["-", "/"] and n2 > n1:
-            # print("debug: swapping n2 and n1 for subtraction")
+            # swapping n2 and n1 for subtraction
             n1, n2 = n2, n1
         question = f"{n1} {op_sym} {n2}"
         try:
@@ -91,7 +85,7 @@ def simple_question(level):
 
 
 @time
-def quiz(level: str, number_of_questions: int):
+def quiz(level: str, name: str, number_of_questions: int):
     """Ask the specified number of questions, and return the number of correct
     answers."""
     score = 0
@@ -110,7 +104,7 @@ def quiz(level: str, number_of_questions: int):
                 print("Correct!\n")
                 score += 10
             else:
-                print(f"Incorrect!\nCorrect answer is {answer}")
+                print(f"Incorrect!\nCorrect answer is {int(answer)}")
             num_end = "s"
             questions_left -= 1
             if questions_left == 1:
@@ -121,7 +115,7 @@ def quiz(level: str, number_of_questions: int):
             print("I'm sorry that's invalid")
             continue
 
-    return score
+    print(f"{name.capitalize()}, you scored {score} out of {QUESTIONS * 10}")
 
 
 def identify_user():
@@ -142,16 +136,14 @@ def main():
         menu_choice = menu()
 
         if menu_choice in ["1", "2", "3"]:  # Run quiz
-            score = quiz(menu_choice, QUESTIONS)
-            print(f"{first_name.capitalize()}, you scored {score} out of {QUESTIONS * 10}")
+            quiz(menu_choice, first_name, QUESTIONS)
 
         elif menu_choice == "4":  # Exit
             print("Bye!")
             break
 
         else:
-            print("Sorry, I don't understand. Please try again...")
-            print()
+            print("Sorry, I don't understand. Please try again...\n")
 
 
 if __name__ == "__main__":
