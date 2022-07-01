@@ -115,11 +115,11 @@ def quiz(level: str, name: str, number_of_questions: int):
             print("I'm sorry that's invalid")
             continue
 
-    print(f"{name.capitalize()}, you scored {score} out of {QUESTIONS * 10}")
+    print(f"{name}, you scored {score} out of {QUESTIONS * 10}")
 
 
 def identify_user():
-    first_name = input("What is yor name?\n")
+    first_name = input("What is yor name?\n").capitalize()
     print(f"Hello, {first_name}!")
     return first_name
 
