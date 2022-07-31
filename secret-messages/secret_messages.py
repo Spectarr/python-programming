@@ -1,10 +1,13 @@
-from hashlib import new
-from operator import is_, le
 import sys
-from tkinter import messagebox, simpledialog, Button, Tk
-from tracemalloc import take_snapshot
+import string
+from tkinter import messagebox, simpledialog, Button, Tk, Text
+
 root = Tk()
 root.withdraw()
+
+ALPHABETS = "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
+ALPHABETS += ALPHABETS.lower()
+ALPHABETS += string.ascii_letters
 
 
 def is_even(number):
@@ -17,6 +20,25 @@ def get_even_letters(message):
 
 def get_odd_letters(message):
     return [v for i, v in enumerate(message) if not is_even(i)]
+
+
+def rotate(alph, n):
+    first = alph[:n]
+    second = alph[n:]
+    return second + first
+
+
+
+def caesar_cypher(message, n):
+    result = ""
+    rot = rotate(ALPHABETS, n)
+    for s in message:
+        if not s.isalnum():
+            result += s
+        else:
+            index = ALPHABETS.find(s)
+            result += rot[index]
+    return result
 
 
 def swap_letters(message=None):
@@ -35,30 +57,48 @@ def swap_letters(message=None):
     return new_message
 
 
-def get_message(text=None):
+def get_text_box(process):
+
+    message = text_box.get(1.0, "end-1c")
+    print(message)
+    messagebox.showinfo("Зашифрованное сообщение:", caesar_cypher(message, process))
+    # return message
+
+
+def get_message(message, operation):
 
     win.destroy()
     if text == "зашифровать":
         message = simpledialog.askstring("Сообщение", "Что хотите зашифровать?")
-        messagebox.showinfo("Зашифрованное сообщение:", swap_letters(message))
-    elif text == "дешифровать":
-        message = simpledialog.askstring("Сообщение", "Введите сообщение для дешифровки:")
-        messagebox.showinfo("Сообщение для дешифровки:", swap_letters(message))
+        messagebox.showinfo("Зашифрованное сообщение:", caesar_cypher(message, 8))
+    elif text == "расшифровать":
+        message = simpledialog.askstring(
+            "Сообщение", "Введите сообщение для дешифровки:"
+        )
+        messagebox.showinfo("Сообщение для дешифровки:", caesar_cypher(message, -8))
 
     win.quit()
     return message
 
 
+def on_closing():
+    if messagebox.askokcancel("Quit", "Do you want to quit?"):
+        win.destroy()
+        sys.exit()
+
+
 if __name__ == "__main__":
     win = Tk()
-    win.geometry("140x100+500+200")
-    win.title("Задание")
-    padding = 20
-    button_left = Button(win, text="зашифровать", command=lambda:get_message("зашифровать"))
-    button_right = Button(win, text="дешифровать", command=lambda:get_message("дешифровать"))
+    win.protocol("WM_DELETE_WINDOW", on_closing)
+    win.geometry("320x150+500+200")
+    win.title("Шифровка")
+    text_box = Text(win, height=5, width=42, background="light grey")
+    button_left = Button(win, text="зашифровать", command=lambda: get_text_box(8))
+    button_right = Button(win, text="расшифровать", command=lambda: get_text_box(-8))
     button_exit = Button(win, text="выйти", command=quit)
-    button_right.grid(row=0, padx=padding)
-    button_left.grid(row=2, padx=padding)
-    button_exit.grid(row=3)
+    text_box.grid(column=0, columnspan=2, row=0)
+    button_left.grid(column=0, row=1)
+    button_right.grid(column=1, row=1)
+    button_exit.grid(row=2, columnspan=2)
 
     win.mainloop()
