@@ -41,7 +41,7 @@ def hard_question():
         n1, n2, n3 = [random.randint(min(RANGE), max(RANGE)) for _ in range(3)]
         first_pair = f"({n1} {op_sym1} {n2})"
         last_pair = f"({n2} {op_sym2} {n3})"
-        if eval(first_pair) == 1 or eval(last_pair) == 1:
+        if eval(first_pair) <= 1 or eval(last_pair) <= 1:
             continue
         # set parentheses to the first, last pair, or none
         par_positions = random.choice(["1", "2", None])
