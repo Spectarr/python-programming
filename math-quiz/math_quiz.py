@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import operator
 import random
 import sys
 from timeit import default_timer as timer
@@ -23,7 +22,7 @@ def time(func):
         start = timer()
         result = func(*args)
         end = timer()
-        print(f"You made it in {round(end - start,2)} seconds!")
+        print(f"You've made it in {round(end - start, 2)} seconds!")
         return result
 
     return wrapper
@@ -130,6 +129,10 @@ def menu():
     return menu_choice
 
 
+def exit_message():
+    print("Bye!")
+
+
 def main():
     first_name = identify_user()
     while True:
@@ -137,11 +140,9 @@ def main():
 
         if menu_choice in ["1", "2", "3"]:  # Run quiz
             quiz(menu_choice, first_name, QUESTIONS)
-
         elif menu_choice == "4":  # Exit
-            print("Bye!")
+            exit_message()
             break
-
         else:
             print("Sorry, I don't understand. Please try again...\n")
 
@@ -150,5 +151,5 @@ if __name__ == "__main__":
     try:
         main()
     except (KeyboardInterrupt, EOFError):
-        print("\nBye!")
+        exit_message()
         sys.exit()
