@@ -28,7 +28,6 @@ def rotate(alph, n):
     return second + first
 
 
-
 def caesar_cypher(message, n):
     result = ""
     rot = rotate(ALPHABETS, n)
@@ -90,9 +89,9 @@ def on_closing():
 if __name__ == "__main__":
     win = Tk()
     win.protocol("WM_DELETE_WINDOW", on_closing)
-    win.geometry("320x150+500+200")
+    win.geometry("350x150+560+200")
     win.title("Шифровка")
-    text_box = Text(win, height=5, width=42, background="light grey")
+    text_box = Text(win, height=5, width=42, background="light grey", border=3)
     button_left = Button(win, text="зашифровать", command=lambda: get_text_box(8))
     button_right = Button(win, text="расшифровать", command=lambda: get_text_box(-8))
     button_exit = Button(win, text="выйти", command=quit)
