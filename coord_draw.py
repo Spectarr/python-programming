@@ -1,75 +1,123 @@
 import re
+import sys
+from tkinter import messagebox, Button, Tk, Text, Label, END
+import turtle as t
+
+MULTIPLY = 20
+root = Tk()
+root.withdraw()
 
 
-def menu():
-    print("\nInput draw instructions:")
+def prepare_instructions(raw_data):
+    fix_data = []
+    sub_pattern = re.compile("\n|\s|[,|;|\.]$")
+    for figure in raw_data:
+        raw_data = re.sub(sub_pattern, "", figure)
+        fix_data.append(raw_data)
+
     instructions = []
-    while True:
-        add_ = input("Input instructions or press Enter to Draw")
-        if add_ == "":
-            break
-        instructions.append(add_)
+    for instruction_list in fix_data:
+        instruction_list = re.split("(?<=\))[,|;]", instruction_list)
+        for i, coord in enumerate(instruction_list):
+            coord = re.sub("\(|\)", "", coord)
+            coord = coord.replace(",", ".")
+            print(coord)
+            if not coord:
+                continue
+            try:
+                instruction_list[i] = [
+                    float(i) * MULTIPLY for i in re.split(";|,", coord)
+                ]
+            except ValueError:
+                print("Check the data", coord)
+                continue
+        instructions.append(instruction_list)
+    print(instructions)
     return instructions
 
-    if menu_choice == "1":
-        data.insert(menu_choice.split(","))
-    return menu_choice
 
-
-figure1 = """(0;-4); (1;-8); (2;-8); (2;-2); (4;-8); (5;-8); (4;2); (3;3); (4;5); (4;7); (3;8); (2;10);
-(1;8); (-2;6); (-4;6); (-2;3); (-1;2); (-4;0);(-5;-2); (-5;-5); (-7;-5); (-9;-6); (-10;-7);
-(-10;-8); (-9;-9); (-7;-10); (-3;-10); (-2;-9); (-4;-8); (-6;-8); (-7;-7);(-6;-6);(-5;-6);
-(-3;-8); (1;-8); (0;-7); (-2;-7); (-1;-7); (0;-6); (0;-4); (-1;-3); (-2;-3)"""
-figure2 = """(4; - 3), (4; - 5), (3; - 9), (0; - 8), (1; - 5), (1; - 4), (0; - 4), (0; - 9), (- 3; - 9),
-(- 3; - 3), (- 7; - 3), (- 7; - 7), (- 8; - 7), (- 8; - 8), (- 11; - 8), (- 10; - 4), (- 11; - 1),
-(- 14; - 3),
-(- 12; - 1), (- 11;2), (- 8;4), (- 4;5)."""
-figure3 = """(2; 4),(6; 4)."""
-data = []
-data.append(figure1)
-data.append(figure2)
-data.append(figure3)
-drawing = []
-
-for figure in data:
-    data = re.sub("\n|\.|\s", "", figure)
-    drawing.append(data)
-
-print(drawing)
-
-
-def prepare_coords(data, multiply):
-    coords = []
-    for instruction in data:
-        instruction = re.split(",|(?<=\));", instruction)
-        for coord in instruction:
-            coord = re.sub("\(|\)|\n", "", coord)
-            coords.append([int(i) * multiply for i in re.split(";|,", coord)])
-
-    print(coords)
-
-
-prepare_coords(drawing, 10)
+def get_xy(coord: list):
+    if not coord:
+        return
+    try:
+        x, y = coord
+        return x, y
+    except ValueError:
+        print(f"unable to unpack: {coord}")
 
 
 def draw(coords):
-    import turtle as t
+    t.penup()
+    first_coord = get_xy(coords[0])
+    if not first_coord:
+        return
+    t.goto(first_coord)
+    t.pendown()
+    for coord in coords:
+        coord = get_xy(coord)
+        if not coord:
+            continue
+        t.goto(get_xy(coord))
+
+
+def on_closing():
+    if messagebox.askokcancel("Quit", "Do you want to quit?"):
+        win.destroy()
+        sys.exit()
+
+
+def process(instructions):
+    root.quit()
+    instructions = prepare_instructions(instructions)
 
     t.shape("arrow")
-    t.speed("fast")
-    t.penup()
+    t.speed("slowest")
     t.pensize(3)
-    t.goto(coords[0])
-    t.pendown()
 
-    for coord in coords:
-        try:
-            x, y = coord
-            t.goto(x, y)
-        except ValueError:
-            print(coord)
-            pass
+    for instruction in instructions:
+        draw(instruction)
 
     t.penup()
     t.hideturtle()
     t.mainloop()
+
+
+def add():
+    messages = text_box.get("1.0", "end-1c")
+    print(f"adding: {messages}")
+
+    messages = messages.split("и")
+    for message in messages:
+        message = re.sub("[а-я|А-Я]|:|\.", "", message)
+        instructions.append(message)
+    label.config(text=f"added {len(instructions)} elements")
+    text_box.delete("1.0", END)
+
+
+def clear_data():
+    global instructions
+    instructions = []
+    label.config(text=f"data cleared")
+
+
+if __name__ == "__main__":
+    win = Tk()
+    win.protocol("WM_DELETE_WINDOW", on_closing)
+    win.geometry("350x150+560+200")
+    win.title("Нарисуй слона")
+    text_box = Text(
+        win, height=5, width=48, background="light grey", border=3, font=("Courier", 8)
+    )
+    instructions = []
+    button_add = Button(win, text="Add", command=add)
+    button_draw = Button(win, text="Draw", command=lambda: process(instructions))
+    button_clear = Button(win, text="Clear", command=clear_data)
+    button_cancel = Button(win, text="Cancel", command=quit)
+    label = Label(win, text="")
+    text_box.grid(column=0, columnspan=4, row=0)
+    button_add.grid(column=0, row=1)
+    button_draw.grid(column=1, row=1)
+    button_clear.grid(column=2, row=1)
+    button_cancel.grid(column=3, row=1)
+    label.grid(columnspan=4, column=0, row=2)
+    win.mainloop()
