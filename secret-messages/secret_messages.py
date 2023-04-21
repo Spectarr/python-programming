@@ -57,27 +57,10 @@ def swap_letters(message=None):
 
 
 def get_text_box(process):
-
     message = text_box.get(1.0, "end-1c")
     print(message)
     messagebox.showinfo("Зашифрованное сообщение:", caesar_cypher(message, process))
     # return message
-
-
-def get_message(message, operation):
-
-    win.destroy()
-    if text == "зашифровать":
-        message = simpledialog.askstring("Сообщение", "Что хотите зашифровать?")
-        messagebox.showinfo("Зашифрованное сообщение:", caesar_cypher(message, 8))
-    elif text == "расшифровать":
-        message = simpledialog.askstring(
-            "Сообщение", "Введите сообщение для дешифровки:"
-        )
-        messagebox.showinfo("Сообщение для дешифровки:", caesar_cypher(message, -8))
-
-    win.quit()
-    return message
 
 
 def on_closing():
