@@ -1,20 +1,20 @@
 import unittest
 from coord_draw import parse_instructions, prepare_instructions
 
-TEST_MULTIPLY = 20
+DEFAULT_SCALE = 20
 
 
 class TestCoordDraw(unittest.TestCase):
     def test_negative(self):
         self.assertEqual(
-            prepare_instructions(["(2; - 3)"], TEST_MULTIPLY),
-            [[[2 * TEST_MULTIPLY, -3 * TEST_MULTIPLY]]],
+            prepare_instructions(["(2; - 3)"], DEFAULT_SCALE),
+            [[[40, -60]]],
         )
 
     def test_float(self):
         self.assertEqual(
-            prepare_instructions(["(2; 3, 5)"], TEST_MULTIPLY),
-            [[[2 * TEST_MULTIPLY, 3.5 * TEST_MULTIPLY]]],
+            prepare_instructions(["(2; 3, 5)"], DEFAULT_SCALE),
+            [[[40, 70]]],
         )
 
     def test_create_split(self):
@@ -24,10 +24,10 @@ class TestCoordDraw(unittest.TestCase):
 
     def test_remove_spaces(self):
         self.assertEqual(
-            prepare_instructions(["(2; - 3) ", " (3; - 1)"], TEST_MULTIPLY),
+            prepare_instructions(["(2; - 3) ", " (3; - 1)"], DEFAULT_SCALE),
             [
-                [[2 * TEST_MULTIPLY, -3 * TEST_MULTIPLY]],
-                [[3 * TEST_MULTIPLY, -1 * TEST_MULTIPLY]],
+                [[40, -60]],
+                [[60, -20]],
             ],
         )
 
@@ -61,7 +61,7 @@ class TestCoordDraw(unittest.TestCase):
             ]
         ]
         self.assertEqual(
-            prepare_instructions(parsed_input, TEST_MULTIPLY), expected_result
+            prepare_instructions(parsed_input, DEFAULT_SCALE), expected_result
         )
 
 
