@@ -65,6 +65,5 @@ class TestCoordDraw(unittest.TestCase):
         )
 
 
-# print(test_processed)
 if __name__ == "__main__":
     unittest.main()
