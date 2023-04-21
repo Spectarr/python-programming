@@ -71,7 +71,7 @@ def process(instructions):
     instructions = prepare_instructions(instructions)
 
     t.shape("arrow")
-    t.speed("slowest")
+    t.speed("slow")
     t.pensize(3)
 
     for instruction in instructions:
@@ -112,12 +112,12 @@ if __name__ == "__main__":
     button_add = Button(win, text="Add", command=add)
     button_draw = Button(win, text="Draw", command=lambda: process(instructions))
     button_clear = Button(win, text="Clear", command=clear_data)
-    button_cancel = Button(win, text="Cancel", command=quit)
+    button_exit = Button(win, text="Exit", command=quit)
     label = Label(win, text="")
     text_box.grid(column=0, columnspan=4, row=0)
     button_add.grid(column=0, row=1)
     button_draw.grid(column=1, row=1)
     button_clear.grid(column=2, row=1)
-    button_cancel.grid(column=3, row=1)
+    button_exit.grid(column=3, row=1)
     label.grid(columnspan=4, column=0, row=2)
     win.mainloop()
